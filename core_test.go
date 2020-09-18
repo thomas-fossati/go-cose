@@ -7,11 +7,12 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -249,6 +250,10 @@ func TestI2OSPCorrectness(t *testing.T) {
 }
 
 func TestI2OSPTiming(t *testing.T) {
+	if os.Getenv("NO_I2OSPTiming_TEST") == "true" {
+		return
+	}
+
 	assert := assert.New(t)
 
 	var (

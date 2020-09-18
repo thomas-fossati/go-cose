@@ -8,15 +8,19 @@ import (
 	"crypto/rsa"
 	"crypto/subtle"
 	"encoding/base64"
-	"github.com/pkg/errors"
 	"io"
 	"math/big"
+
+	"github.com/pkg/errors"
 )
 
-// ContextSignature identifies the context of the signature as a
-// COSE_Signature structure per
+// Supported Sig_structure contextes
+//
 // https://tools.ietf.org/html/rfc8152#section-4.4
-const ContextSignature = "Signature"
+const (
+	ContextSignature  = "Signature"
+	ContextSignature1 = "Signature1"
+)
 
 // Supported Algorithms
 var (
@@ -249,7 +253,7 @@ func (v *Verifier) Verify(digest []byte, signature []byte) (err error) {
 
 // buildAndMarshalSigStructure creates a Sig_structure, populates it
 // with the appropriate fields, and marshals it to CBOR bytes
-func buildAndMarshalSigStructure(bodyProtected, signProtected, external, payload []byte) (ToBeSigned []byte, err error) {
+func buildAndMarshalSigStructure(ctxSignature string, bodyProtected, signProtected, external, payload []byte) (ToBeSigned []byte, err error) {
 	// 1.  Create a Sig_structure and populate it with the appropriate fields.
 	//
 	// Sig_structure = [
@@ -260,12 +264,17 @@ func buildAndMarshalSigStructure(bodyProtected, signProtected, external, payload
 	//     payload : bstr
 	// ]
 	sigStructure := []interface{}{
-		ContextSignature,
+		ctxSignature,
 		bodyProtected, // message.headers.EncodeProtected(),
-		signProtected, // message.signatures[0].headers.EncodeProtected(),
-		external,
-		payload,
 	}
+	// The protected attributes from the signer structure field is omitted
+	// for the COSE_Sign1 signature structure.
+	if ctxSignature != "Signature1" {
+		// message.signatures[0].headers.EncodeProtected()
+		sigStructure = append(sigStructure, signProtected)
+	}
+	sigStructure = append(sigStructure, external)
+	sigStructure = append(sigStructure, payload)
 
 	// 2.  Create the value ToBeSigned by encoding the Sig_structure to a
 	//     byte string, using the encoding described in Section 14.

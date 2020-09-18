@@ -40,6 +40,8 @@ goveralls:
 	go get -u github.com/mattn/goveralls
 
 smoketest-examples:
+	go run example/sign1.go
+	go run example/psa.go
 	go run example/sign.go
 	go run example/verify.go
 
