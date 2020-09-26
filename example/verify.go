@@ -3,7 +3,10 @@ package main
 import (
 	"crypto/rand"
 	"fmt"
-	cose "go.mozilla.org/cose"
+
+	_ "crypto/sha256"
+
+	cose "github.com/thomas-fossati/go-cose"
 )
 
 func main() {

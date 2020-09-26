@@ -2,6 +2,7 @@ package cose
 
 import (
 	"fmt"
+
 	"github.com/pkg/errors"
 )
 
@@ -299,7 +300,7 @@ func FindDuplicateHeader(headers *Headers) interface{} {
 	}
 	headers.Protected = CompressHeaders(headers.Protected)
 	headers.Unprotected = CompressHeaders(headers.Unprotected)
-	for k, _ := range headers.Protected {
+	for k := range headers.Protected {
 		_, ok := headers.Unprotected[k]
 		if ok {
 			return k
