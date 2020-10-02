@@ -309,6 +309,11 @@ func FindDuplicateHeader(headers *Headers) interface{} {
 	return nil
 }
 
+// GetAlg returns the algorithm by label or int from the protected headers
+func GetAlg(h *Headers) (alg *Algorithm, err error) {
+	return getAlg(h)
+}
+
 // getAlg returns the alg by label or int
 // alg should only be in Protected headers so it does not check Unprotected headers
 func getAlg(h *Headers) (alg *Algorithm, err error) {
