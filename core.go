@@ -56,8 +56,8 @@ type Signer struct {
 }
 
 // GetAlg retrieves the algorithm associated with the Signer
-func (s Signer) GetAlg() Algorithm {
-	return *s.alg
+func (s Signer) GetAlg() *Algorithm {
+	return s.alg
 }
 
 // RSAOptions are options for NewSigner currently just the RSA Key
